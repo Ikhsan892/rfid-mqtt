@@ -16,12 +16,12 @@
 //LiquidCrystal_I2C lcd(0x27, 16, 2);
 MFRC522 mfrc522(SS_PIN, RST_PIN);  // Create MFRC522 instance
 
-char* ssid     = "FlowRezz"; // diganti SSID Wifi
-const char* password = "Xnord3321"; // pw WiFi
-const char* hostMqtt = "192.168.100.72"; // host mqtt
-const int port = 1883; // port mqtt
-const char* clientId = "ESP8266Client"; // client ID untuk MQTT
-const char* topic = "IoT_command"; // topic
+char* ssid = "Tukang WiFi"; // ganti SSID WiFi
+const char* password = "qazwsxedc";
+const char* hostMqtt = "192.168.137.86";
+const int port = 1883;
+const char* clientId = "RFID SMKN15";
+const char* topic = "IoT_command";
 
 bool isRegistered = false;
 
@@ -138,7 +138,8 @@ void loop()
 
   // Dump debug info about the card; PICC_HaltA() is automatically called
   Serial.print(F("Card UID:"));
-  String hex = hex_uid(mfrc522.uid.uidByte, mfrc522.uid.size);
+//  String hex = hex_uid(mfrc522.uid.uidByte, mfrc522.uid.size);
+  String hex = hex_uid_read_ktp_sim_emoney();
   Serial.println(hex);
   int arrLen = hex.length() + 1;
   char charMsg[arrLen];
@@ -206,6 +207,18 @@ String hex_uid(byte *buffer, byte bufferSize) {
   }
 
   return tagContent;
+}
+
+String hex_uid_read_ktp_sim_emoney() {
+  String strID = "";
+  for (byte i = 0; i < 4; i++) {
+    strID +=
+      (mfrc522.uid.uidByte[i] < 0x10 ? "0" : "") +
+      String(mfrc522.uid.uidByte[i], HEX) +
+      (i != 3 ? ":" : "");
+  }
+
+  return strID;
 }
 
 //void LcdClearAndPrint(String text)
